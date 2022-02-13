@@ -1,0 +1,1 @@
+mvn clean install failsafe:integration-test failsafe:verify -PMyIT -DintegrationTestProfiles=test

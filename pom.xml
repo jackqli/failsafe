@@ -16,7 +16,7 @@
         <spring-boot.version>2.0.5.RELEASE</spring-boot.version>
         <maven-failsafe-plugin.version>2.19.1</maven-failsafe-plugin.version>
         <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
-        <envName>default</envName>
+        <integrationTestProfiles>test</integrationTestProfiles>
     </properties>
 
     <dependencyManagement>
@@ -34,7 +34,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -58,6 +58,24 @@
         </activation>
             <build>
                 <plugins>
+                    <plugin>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <executions>
+                            <execution><!-- Run our version calculation script -->
+                                <id>Start testing environment</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>com.example.demo.DemoApplication</mainClass>
+                                    <classpathScope>runtime</classpathScope>
+                                    <commandlineArgs>--spring.profiles.active=${integrationTestProfiles}</commandlineArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
@@ -83,7 +101,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <argLine>-Dspring.profiles.active=${envName2}</argLine>
+                            <argLine>-Dspring.profiles.active=${integrationTestProfiles}</argLine>
                             <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                         </configuration>
                     </plugin>
